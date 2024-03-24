@@ -1,0 +1,40 @@
+name: Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4.1.2
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5.0.0
+      with:
+        python-version: "3.12"
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Build with Pyinstaller
+      run: |
+        pyinstaller -F main.py
+        pyinstaller -F pre-processing.py
+    - name: Create placeholders
+      run: |
+        mkdir dist/data
+        ni dist/data/put_data_here
+        mkdir dist/output
+        ni dist/data/output_here
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v4.3.1
+      with: 
+        path: dist
