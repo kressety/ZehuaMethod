@@ -56,3 +56,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+    input('按下回车结束程序……')
