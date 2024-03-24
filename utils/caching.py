@@ -2,6 +2,10 @@ from os import remove
 from os.path import exists
 from pickle import load, dump
 
+from utils.log_formatter import setup_logger
+
+logger = setup_logger(__name__)
+
 cache_path = '_cache.pkl'
 
 
@@ -11,6 +15,7 @@ def load_cache() -> list[int]:
 
     :return: 缓存内容。
     """
+    logger.debug('加载缓存文件。')
     with open(cache_path, 'rb') as cache_file:
         return load(cache_file)
 
@@ -21,16 +26,20 @@ def initial_cache() -> list[int]:
 
     :return: 缓存内容。
     """
+    logger.debug('初始化缓存文件。')
     try:
         if exists(cache_path):
             cache_content = load_cache()
             if not isinstance(cache_content, list):
-                raise ValueError("Cache content is not a list")
+                logger.debug('缓存文件格式错误，重新生成。')
+                raise ValueError
             else:
                 return cache_content
         else:
-            raise FileNotFoundError("Cache file does not exist")
+            logger.debug('缓存文件不存在，重新生成。')
+            raise FileNotFoundError
     except (EOFError, FileNotFoundError, ValueError):
+        logger.debug('读取已保存的缓存文件。')
         with open(cache_path, 'wb') as cache_file:
             dump([], cache_file)
         return []
@@ -42,6 +51,7 @@ def save_cache(obj: list[int]) -> None:
 
     :param obj: 需要添加到缓存的整数列表。
     """
+    logger.debug('写入新的缓存。')
     cache_content = load_cache()
     cache_content += obj
     cache_content = list(set(cache_content))
@@ -53,4 +63,5 @@ def clear_cache() -> None:
     """
     清除缓存。
     """
+    logger.debug('清除缓存文件。')
     remove(cache_path)
