@@ -27,7 +27,6 @@ jobs:
     - name: Build with Pyinstaller
       run: |
         pyinstaller -F main.py
-        pyinstaller -F pre-processing.py
     - name: Create placeholders
       run: |
         mkdir dist/data
