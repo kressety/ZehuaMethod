@@ -33,7 +33,7 @@ jobs:
         mkdir dist/data
         ni dist/data/put_data_here
         mkdir dist/output
-        ni dist/data/output_here
+        ni dist/output/output_here
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4.3.1
       with: 
